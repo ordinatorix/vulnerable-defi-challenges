@@ -20,11 +20,11 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
 
     function flashLoan(address borrower, uint256 borrowAmount) external nonReentrant {
 
-        uint256 balanceBefore = address(this).balance;
+        uint256 balanceBefore = address(this).balance;//1000eth
         require(balanceBefore >= borrowAmount, "Not enough ETH in pool");
 
 
-        require(borrower.isContract(), "Borrower must be a deployed contract");
+        require(borrower.isContract(), "Borrower must be a deployed contract");// borrower is not sender!
         // Transfer ETH and handle control to receiver
         borrower.functionCallWithValue(
             abi.encodeWithSignature(
@@ -37,7 +37,7 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
         require(
             address(this).balance >= balanceBefore + FIXED_FEE,
             "Flash loan hasn't been paid back"
-        );
+        );// make sure the loan is repayed.
     }
 
     // Allow deposits of ETH

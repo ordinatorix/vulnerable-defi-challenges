@@ -19,21 +19,24 @@ contract FlashLoanReceiver {
 
     // Function called by the pool during flash loan
     function receiveEther(uint256 fee) public payable {
-        require(msg.sender == pool, "Sender must be pool");
+        require(msg.sender == pool, "Sender must be pool"); //only pool can send.
 
         uint256 amountToBeRepaid = msg.value + fee;
+        // requires this contract balance to be greater than amount to repay.
+        require(
+            address(this).balance >= amountToBeRepaid,
+            "Cannot borrow that much"
+        );
 
-        require(address(this).balance >= amountToBeRepaid, "Cannot borrow that much");
-        
         _executeActionDuringFlashLoan();
-        
+
         // Return funds to pool
         pool.sendValue(amountToBeRepaid);
     }
 
     // Internal function where the funds received are used
-    function _executeActionDuringFlashLoan() internal { }
+    function _executeActionDuringFlashLoan() internal {}
 
     // Allow deposits of ETH
-    receive () external payable {}
+    receive() external payable {}
 }
