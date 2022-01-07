@@ -25,7 +25,7 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
 
 
         require(borrower.isContract(), "Borrower must be a deployed contract");// borrower is not sender!
-        // Transfer ETH and handle control to receiver
+        // Transfer ETH and handle control to receiver.
         borrower.functionCallWithValue(
             abi.encodeWithSignature(
                 "receiveEther(uint256)",
