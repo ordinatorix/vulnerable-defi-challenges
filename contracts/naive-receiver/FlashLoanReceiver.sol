@@ -17,7 +17,7 @@ contract FlashLoanReceiver {
         pool = poolAddress;
     }
 
-    // Function called by the pool during flash loan
+    // Function called by the pool during flash loan.
     function receiveEther(uint256 fee) public payable {
         require(msg.sender == pool, "Sender must be pool"); //only pool can send.
 
