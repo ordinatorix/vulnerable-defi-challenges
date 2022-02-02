@@ -41,8 +41,8 @@ contract SideEntranceLenderPool {
 
 contract EvilLoan {
     using Address for address payable;
-    SideEntranceLenderPool pool;
-    address owner;
+    SideEntranceLenderPool public immutable pool;
+    address  public immutable owner;
 
     constructor(SideEntranceLenderPool _pool, address _owner) {
         pool = _pool;
